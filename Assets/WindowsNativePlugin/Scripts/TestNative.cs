@@ -3,20 +3,46 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class TestNative : MonoBehaviour {
-
-    [DllImport("XtionCapture", EntryPoint = "TestHello")]
-    public static extern IntPtr TestHello();
+    private XtionInterface xtionInterface;
 
     // Use this for initialization
     void Start () {
-        IntPtr returnedChar = TestHello();
-        string returnedString = Marshal.PtrToStringAnsi(returnedChar);
-        Debug.Log("Returned : " + returnedString);
-        Marshal.FreeHGlobal(returnedChar);
-	}
+        xtionInterface = GameObject.Find("CameraInterface").GetComponent<XtionInterface>();
+    }
 	
 	// Update is called once per frame
 	void Update () {
 		
 	}
+
+    public void OpenDevice()
+    {
+        xtionInterface.OpenDevice();
+    }
+    public void CloseDevice()
+    {
+        xtionInterface.CloseDevice();
+    }
+    public void GetDeviceName()
+    {
+        xtionInterface.GetDeviceName();
+    }
+
+    public void GetDeviceFirstName()
+    {
+        xtionInterface.GetDeviceFirstName();
+    }
+
+    public void GetVendorName()
+    {
+        xtionInterface.GetVendorname();
+    }
+    public void GetInitFlag()
+    {
+        xtionInterface.GetInitFlag();
+    }
+    public void GetUsbProductId()
+    {
+        xtionInterface.GetUsbProductId();
+    }
 }
