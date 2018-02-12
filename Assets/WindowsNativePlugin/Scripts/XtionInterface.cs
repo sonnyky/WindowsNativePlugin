@@ -4,8 +4,12 @@ using UnityEngine;
 
 public class XtionInterface : MonoBehaviour
 {
+    // This is the pointer to the xtion_capture class.
     private IntPtr captureInstance;
-    private IntPtr deviceAddress;
+
+    // This method creates the xtion_capture instance.
+    [DllImport("XtionCapture", EntryPoint = "com_tinker_xtion_capture_create")]
+    private static extern IntPtr _Create();
 
     [DllImport("XtionCapture", EntryPoint = "com_tinker_init_openni")]
     private static extern void _InitOpenNI(IntPtr instance);
@@ -19,12 +23,10 @@ public class XtionInterface : MonoBehaviour
     private static ILogger logger = Debug.unityLogger;
     private static string kTAG = "TestNativeTag";
 
-    [DllImport("XtionCapture", EntryPoint = "com_tinker_xtion_capture_create")]
-    private static extern IntPtr _Create();
-
     [DllImport("XtionCapture", EntryPoint = "com_tinker_get_capture_handle")]
     private static extern IntPtr _GetHandle(IntPtr instance);
 
+    // Helper methods to retrieve initialization status
     [DllImport("XtionCapture", EntryPoint = "com_tinker_get_init_flag")]
     private static extern bool _GetInitFlag(IntPtr instance);
 
@@ -39,14 +41,10 @@ public class XtionInterface : MonoBehaviour
 
     [DllImport("XtionCapture", EntryPoint = "com_tinker_get_device_name", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private static extern IntPtr _GetDeviceName(IntPtr instance);
-    [DllImport("XtionCapture", EntryPoint = "com_tinker_get_first_device_name", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-    private static extern IntPtr _GetFirstDeviceName(IntPtr instance);
-
+   
     [DllImport("XtionCapture", EntryPoint = "com_tinker_get_vendor_name", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private static extern IntPtr _GetVendorName(IntPtr instance);
-    [DllImport("XtionCapture", EntryPoint = "com_tinker_get_usb_product_id", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-    private static extern int _GetUsbProdId(IntPtr instance);
-
+   
     private void Start()
     {
         InitiateDevice();
@@ -55,13 +53,11 @@ public class XtionInterface : MonoBehaviour
     private void InitiateDevice()
     {
         captureInstance = _Create();
+        logger.Log(kTAG, "The instance pointer : " + captureInstance);
         _InitOpenNI(captureInstance);
         _OpenDevice(captureInstance);
+       
         logger.Log(kTAG, "get plugin name : " + Marshal.PtrToStringAnsi(_GetPluginName(captureInstance)));
-    }
-
-    public void OpenDevice()
-    {
     }
 
     public void CloseDevice()
@@ -82,16 +78,8 @@ public class XtionInterface : MonoBehaviour
     {
         logger.Log(kTAG, "get device name : " + Marshal.PtrToStringAnsi(_GetDeviceName(captureInstance)));
     }
-    public void GetDeviceFirstName()
-    {
-        logger.Log(kTAG, "get first device name : " + Marshal.PtrToStringAnsi(_GetFirstDeviceName(captureInstance)));
-    }
     public void GetVendorname()
     {
         logger.Log(kTAG, "get vendor name : " + Marshal.PtrToStringAnsi(_GetVendorName(captureInstance)));
-    }
-    public void GetUsbProductId()
-    {
-        logger.Log(kTAG, "get us product id name : " + _GetUsbProdId(captureInstance));
     }
 }
