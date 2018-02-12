@@ -10,15 +10,6 @@ public class TestNative : MonoBehaviour {
         xtionInterface = GameObject.Find("CameraInterface").GetComponent<XtionInterface>();
     }
 	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
-    public void OpenDevice()
-    {
-        xtionInterface.OpenDevice();
-    }
     public void CloseDevice()
     {
         xtionInterface.CloseDevice();
@@ -26,11 +17,6 @@ public class TestNative : MonoBehaviour {
     public void GetDeviceName()
     {
         xtionInterface.GetDeviceName();
-    }
-
-    public void GetDeviceFirstName()
-    {
-        xtionInterface.GetDeviceFirstName();
     }
 
     public void GetVendorName()
@@ -41,8 +27,5 @@ public class TestNative : MonoBehaviour {
     {
         xtionInterface.GetInitFlag();
     }
-    public void GetUsbProductId()
-    {
-        xtionInterface.GetUsbProductId();
-    }
+  
 }
