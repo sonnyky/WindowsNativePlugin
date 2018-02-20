@@ -6,6 +6,7 @@ public class XtionInterface : MonoBehaviour
 {
     // This is the pointer to the xtion_capture class.
     private IntPtr captureInstance;
+    private IntPtr device;
 
     // This method creates the xtion_capture instance.
     [DllImport("XtionCapture", EntryPoint = "com_tinker_xtion_capture_create")]
@@ -15,7 +16,7 @@ public class XtionInterface : MonoBehaviour
     private static extern void _InitOpenNI(IntPtr instance);
 
     [DllImport("XtionCapture", EntryPoint = "com_tinker_open_device")]
-    public static extern void _OpenDevice(IntPtr instance);
+    public static extern IntPtr _OpenDevice(IntPtr instance);
 
     [DllImport("XtionCapture", EntryPoint = "com_tinker_close_device")]
     public static extern void _CloseDevice();
@@ -36,9 +37,6 @@ public class XtionInterface : MonoBehaviour
     [DllImport("XtionCapture", EntryPoint = "com_tinker_get_plugin_name")]
     private static extern IntPtr _GetPluginName(IntPtr instance);
 
-    [DllImport("XtionCapture", EntryPoint = "com_tinker_is_valid", CallingConvention = CallingConvention.Cdecl)]
-    private static extern bool _IsValid(IntPtr instance);
-
     [DllImport("XtionCapture", EntryPoint = "com_tinker_get_device_name", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private static extern IntPtr _GetDeviceName(IntPtr instance);
    
@@ -55,7 +53,7 @@ public class XtionInterface : MonoBehaviour
         captureInstance = _Create();
         logger.Log(kTAG, "The instance pointer : " + captureInstance);
         _InitOpenNI(captureInstance);
-        _OpenDevice(captureInstance);
+        device = _OpenDevice(captureInstance);
        
         logger.Log(kTAG, "get plugin name : " + Marshal.PtrToStringAnsi(_GetPluginName(captureInstance)));
     }
