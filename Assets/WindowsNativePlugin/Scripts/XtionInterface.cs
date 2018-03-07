@@ -6,7 +6,7 @@ public class XtionInterface : MonoBehaviour
 {
     // This is the pointer to the xtion_capture class.
     private IntPtr captureInstance;
-    private IntPtr device;
+    private string device;
 
     // This method creates the xtion_capture instance.
     [DllImport("XtionCapture", EntryPoint = "com_tinker_xtion_capture_create")]
@@ -53,7 +53,7 @@ public class XtionInterface : MonoBehaviour
         captureInstance = _Create();
         logger.Log(kTAG, "The instance pointer : " + captureInstance);
         _InitOpenNI(captureInstance);
-        device = _OpenDevice(captureInstance);
+        device = Marshal.PtrToStringAnsi(_OpenDevice(captureInstance));
        
         logger.Log(kTAG, "get plugin name : " + Marshal.PtrToStringAnsi(_GetPluginName(captureInstance)));
     }
