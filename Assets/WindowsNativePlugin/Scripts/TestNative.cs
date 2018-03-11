@@ -27,5 +27,13 @@ public class TestNative : MonoBehaviour {
     {
         xtionInterface.GetInitFlag();
     }
+    public void StartDepthStream()
+    {
+        xtionInterface.StartDepthStream();
+    }
+    public void GetDepthData()
+    {
+        xtionInterface.GetDepthData();
+    }
   
 }

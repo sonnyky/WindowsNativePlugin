@@ -8,6 +8,9 @@ public class XtionInterface : MonoBehaviour
     private IntPtr captureInstance;
     private string device;
 
+    private UInt16[] depthData;
+    private UInt16 variable;
+
     // This method creates the xtion_capture instance.
     [DllImport("XtionCapture", EntryPoint = "com_tinker_xtion_capture_create")]
     private static extern IntPtr _Create();
@@ -42,9 +45,16 @@ public class XtionInterface : MonoBehaviour
    
     [DllImport("XtionCapture", EntryPoint = "com_tinker_get_vendor_name", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private static extern IntPtr _GetVendorName(IntPtr instance);
-   
+
+    [DllImport("XtionCapture", EntryPoint = "com_tinker_start_depth_stream", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+    private static extern IntPtr _StartDepthStream(IntPtr instance);
+
+    [DllImport("XtionCapture", EntryPoint = "com_tinker_get_depth_data", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+    private static extern IntPtr _GetDepthData(IntPtr instance);
+
     private void Start()
     {
+        depthData = new UInt16[307200];
         InitiateDevice();
     }
 
@@ -79,5 +89,20 @@ public class XtionInterface : MonoBehaviour
     public void GetVendorname()
     {
         logger.Log(kTAG, "get vendor name : " + Marshal.PtrToStringAnsi(_GetVendorName(captureInstance)));
+    }
+
+    public void StartDepthStream()
+    {
+        logger.Log(kTAG, "get vendor name : " + Marshal.PtrToStringAnsi(_StartDepthStream(captureInstance)));
+    }
+    public void GetDepthData()
+    {
+        logger.Log(kTAG, "depth data pointer: " + _GetDepthData(captureInstance));
+        
+        IntPtr p = _GetDepthData(captureInstance);
+        //Marshal.PtrToStructure(_GetDepthData(captureInstance), depthData);
+        byte[] returnedData = new byte[307200];
+        Marshal.Copy(p, returnedData, 0, returnedData.Length);
+        logger.Log(kTAG, "size of pointer : " + returnedData[153600]);
     }
 }
