@@ -1540,7 +1540,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!154 &944492824
 TerrainCollider:
   m_ObjectHideFlags: 0
@@ -1608,10 +1608,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   depthHeight: 512
   depthWidth: 512
-  terrainWidth: 0
-  terrainHeight: 0
-  minDepth: 50
-  maxDepth: 100
+  terrainWidth: 512
+  terrainHeight: 512
+  minDepth: 1000
+  maxDepth: 1800
 --- !u!1 &1000763771
 GameObject:
   m_ObjectHideFlags: 0

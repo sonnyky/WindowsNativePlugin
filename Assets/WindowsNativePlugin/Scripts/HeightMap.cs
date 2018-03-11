@@ -86,30 +86,19 @@ public class HeightMap : MonoBehaviour
     void GenerateHeightmap()
     {
         xtionInterface.GetReturnedDepthData(ref depthData);
-        Debug.Log("depth data at center : " + depthData[153600]);
-        for (y = 0; y < depthHeight; y++)//height
+        Debug.Log("depth data at center : " + depthData[153920]);
+        for (y = 0; y < 480; y++)
         {
-            for (x = 0; x < depthWidth; x++)//width
+            for (x = 0; x < depthWidth; x++)
             {
+                
                 float heightPercentage = 0;
-                float prevHeightPercentage = prev_heightValues[x, y];
-                int depthIndex = ((y) * 480) + (x);
+                int depthIndex = ((y) * 640) + (x);
                 float depth = 0;
                
-                    depth = depthData[depthIndex];
-                    heightPercentage = FilterDepthValueToPercent(depth);
-                    //m_heightValues[x, terrainHeight - y - 1] = heightPercentage; // Flip the y index so it will give a top-bottom view
-                    m_heightValues[terrainWidth - x - 1, y] = heightPercentage;
-                
-              
-                prev_heightValues[terrainWidth - x - 1, y] = heightPercentage;
-                // TODO : デプス情報がゼロの位置では高低描画をうまく更新できていない。
-
-                if (heightPercentage == 0)
-                {
-                    m_heightValues[x, terrainHeight - y - 1] = prevHeightPercentage;
-                    prev_heightValues[x, terrainHeight - y - 1] = prevHeightPercentage;
-                }
+                depth = depthData[depthIndex];
+                heightPercentage = FilterDepthValueToPercent(depth);
+                m_heightValues[x, y] = heightPercentage;
             }
         }
         m_terrain.terrainData.SetHeights(0, 0, m_heightValues);

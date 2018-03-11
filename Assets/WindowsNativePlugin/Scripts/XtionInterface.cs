@@ -22,7 +22,7 @@ public class XtionInterface : MonoBehaviour
     public static extern IntPtr _OpenDevice(IntPtr instance);
 
     [DllImport("XtionCapture", EntryPoint = "com_tinker_close_device")]
-    public static extern void _CloseDevice();
+    public static extern void _CloseDevice(IntPtr instance);
 
     private static ILogger logger = Debug.unityLogger;
     private static string kTAG = "TestNativeTag";
@@ -79,7 +79,7 @@ public class XtionInterface : MonoBehaviour
 
     public void CloseDevice()
     {
-        _CloseDevice();
+        _CloseDevice(captureInstance);
     }
 
     public void GetInitFlag()

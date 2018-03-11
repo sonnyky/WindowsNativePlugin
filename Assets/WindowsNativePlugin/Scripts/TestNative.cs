@@ -9,7 +9,7 @@ public class TestNative : MonoBehaviour {
     // Use this for initialization
     void Start () {
         xtionInterface = GameObject.Find("CameraInterface").GetComponent<XtionInterface>();
-        //heightMap = GameObject.Find("HeightMap").GetComponent<HeightMap>();
+        heightMap = GameObject.Find("HeightMap").GetComponent<HeightMap>();
     }
 	
     public void CloseDevice()
