@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class TestNative : MonoBehaviour {
     private XtionInterface xtionInterface;
+    private HeightMap heightMap;
 
     // Use this for initialization
     void Start () {
         xtionInterface = GameObject.Find("CameraInterface").GetComponent<XtionInterface>();
+        //heightMap = GameObject.Find("HeightMap").GetComponent<HeightMap>();
     }
 	
     public void CloseDevice()
@@ -35,5 +37,13 @@ public class TestNative : MonoBehaviour {
     {
         xtionInterface.GetDepthData();
     }
+    public void GenerateHeightMap()
+    {
+        heightMap.StartGenerate();
+    }
   
+    public void GetErrorMessage()
+    {
+        xtionInterface.GetErrorMessage();
+    }
 }

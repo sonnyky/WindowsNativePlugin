@@ -8,8 +8,8 @@ public class XtionInterface : MonoBehaviour
     private IntPtr captureInstance;
     private string device;
 
-    private UInt16[] depthData;
     private UInt16 variable;
+    private short[] returnedData;
 
     // This method creates the xtion_capture instance.
     [DllImport("XtionCapture", EntryPoint = "com_tinker_xtion_capture_create")]
@@ -52,9 +52,18 @@ public class XtionInterface : MonoBehaviour
     [DllImport("XtionCapture", EntryPoint = "com_tinker_get_depth_data", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private static extern IntPtr _GetDepthData(IntPtr instance);
 
+    [DllImport("XtionCapture", EntryPoint = "com_tinker_test_depth_data", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+    private static extern int _GetTestDepthData(IntPtr instance);
+
+
+    private void Awake()
+    {
+        returnedData = new short[307200];
+    }
+
     private void Start()
     {
-        depthData = new UInt16[307200];
+       
         InitiateDevice();
     }
 
@@ -94,15 +103,24 @@ public class XtionInterface : MonoBehaviour
     public void StartDepthStream()
     {
         logger.Log(kTAG, "get vendor name : " + Marshal.PtrToStringAnsi(_StartDepthStream(captureInstance)));
+        Debug.Log("Data buffer length : " + returnedData.Length);
     }
     public void GetDepthData()
-    {
-        logger.Log(kTAG, "depth data pointer: " + _GetDepthData(captureInstance));
-        
+    {        
         IntPtr p = _GetDepthData(captureInstance);
-        //Marshal.PtrToStructure(_GetDepthData(captureInstance), depthData);
-        byte[] returnedData = new byte[307200];
+        //Marshal.PtrToStructure(_GetDepthData(captureInstance), depthData); //unused
+       
         Marshal.Copy(p, returnedData, 0, returnedData.Length);
-        logger.Log(kTAG, "size of pointer : " + returnedData[153600]);
+        logger.Log(kTAG, "depth : " + returnedData[153920]);
+    }
+
+    public void GetReturnedDepthData(ref short[] dataRequest)
+    {
+        dataRequest = returnedData;
+    }
+
+    public void GetErrorMessage()
+    {
+        logger.Log(kTAG, "get error message : " + Marshal.PtrToStringAnsi(_GetErrorMessage(captureInstance)));
     }
 }
