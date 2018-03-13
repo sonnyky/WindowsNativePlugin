@@ -14,6 +14,7 @@ public class TestNative : MonoBehaviour {
 	
     public void CloseDevice()
     {
+        heightMap.StopGenerate();
         xtionInterface.CloseDevice();
     }
     public void GetDeviceName()

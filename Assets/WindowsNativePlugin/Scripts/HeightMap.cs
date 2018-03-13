@@ -85,6 +85,7 @@ public class HeightMap : MonoBehaviour
 
     void GenerateHeightmap()
     {
+        xtionInterface.GetDepthData();
         xtionInterface.GetReturnedDepthData(ref depthData);
         Debug.Log("depth data at center : " + depthData[153920]);
         for (y = 0; y < 480; y++)
@@ -138,5 +139,9 @@ public class HeightMap : MonoBehaviour
         generate = true;
     }
  
+    public void StopGenerate()
+    {
+        generate = false;
+    }
     
 }
