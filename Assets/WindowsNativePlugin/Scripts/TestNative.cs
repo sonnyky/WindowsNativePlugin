@@ -3,20 +3,48 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class TestNative : MonoBehaviour {
-
-    [DllImport("XtionCapture", EntryPoint = "TestHello")]
-    public static extern IntPtr TestHello();
+    private XtionInterface xtionInterface;
+    private HeightMap heightMap;
 
     // Use this for initialization
     void Start () {
-        IntPtr returnedChar = TestHello();
-        string returnedString = Marshal.PtrToStringAnsi(returnedChar);
-        Debug.Log("Returned : " + returnedString);
-        Marshal.FreeHGlobal(returnedChar);
-	}
+        xtionInterface = GameObject.Find("CameraInterface").GetComponent<XtionInterface>();
+        heightMap = GameObject.Find("HeightMap").GetComponent<HeightMap>();
+    }
 	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    public void CloseDevice()
+    {
+        heightMap.StopGenerate();
+        xtionInterface.CloseDevice();
+    }
+    public void GetDeviceName()
+    {
+        xtionInterface.GetDeviceName();
+    }
+
+    public void GetVendorName()
+    {
+        xtionInterface.GetVendorname();
+    }
+    public void GetInitFlag()
+    {
+        xtionInterface.GetInitFlag();
+    }
+    public void StartDepthStream()
+    {
+        xtionInterface.StartDepthStream();
+    }
+    public void GetDepthData()
+    {
+        xtionInterface.GetDepthData();
+    }
+    public void GenerateHeightMap()
+    {
+        heightMap.StartGenerate();
+    }
+  
+    public void GetErrorMessage()
+    {
+        xtionInterface.GetErrorMessage();
+    }
 }

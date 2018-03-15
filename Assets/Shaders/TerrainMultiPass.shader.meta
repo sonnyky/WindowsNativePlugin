@@ -1,0 +1,35 @@
+fileFormatVersion: 2
+guid: d02c986258cfb4887b0e043fe469e64d
+timeCreated: 1486514978
+licenseType: Pro
+ShaderImporter:
+  defaultTextures:
+  - _AreaChannel: {instanceID: 0}
+  - _MultiBlendNoise: {instanceID: 0}
+  - _Texture1: {instanceID: 0}
+  - _Texture3: {instanceID: 0}
+  - _Wave: {instanceID: 0}
+  - _WaveNoise: {instanceID: 0}
+  - _Texture4a: {instanceID: 0}
+  - _Texture4b: {instanceID: 0}
+  - _Texture4c: {instanceID: 0}
+  - _Texture4d: {instanceID: 0}
+  - _Texture5a: {instanceID: 0}
+  - _Texture5b: {instanceID: 0}
+  - _Texture5c: {instanceID: 0}
+  - _Texture5d: {instanceID: 0}
+  - _Texture6a: {instanceID: 0}
+  - _Texture6b: {instanceID: 0}
+  - _Texture6c: {instanceID: 0}
+  - _Texture6d: {instanceID: 0}
+  - _Texture7a: {instanceID: 0}
+  - _Texture7b: {instanceID: 0}
+  - _Texture7c: {instanceID: 0}
+  - _Texture7d: {instanceID: 0}
+  - _Texture8a: {instanceID: 0}
+  - _Texture8b: {instanceID: 0}
+  - _Texture8c: {instanceID: 0}
+  - _Texture8d: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
