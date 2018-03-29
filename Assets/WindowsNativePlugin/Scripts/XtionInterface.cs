@@ -6,7 +6,6 @@ public class XtionInterface : MonoBehaviour
 {
     // This is the pointer to the xtion_capture class.
     private IntPtr captureInstance;
-    private string device;
 
     private UInt16 variable;
     private short[] returnedData;
@@ -25,14 +24,7 @@ public class XtionInterface : MonoBehaviour
     public static extern void _CloseDevice(IntPtr instance);
 
     private static ILogger logger = Debug.unityLogger;
-    private static string kTAG = "TestNativeTag";
-
-    [DllImport("XtionCapture", EntryPoint = "com_tinker_get_capture_handle")]
-    private static extern IntPtr _GetHandle(IntPtr instance);
-
-    // Helper methods to retrieve initialization status
-    [DllImport("XtionCapture", EntryPoint = "com_tinker_get_init_flag")]
-    private static extern bool _GetInitFlag(IntPtr instance);
+    private static string kTAG = "XtionUnity";
 
     [DllImport("XtionCapture", EntryPoint = "com_tinker_get_error_message")]
     private static extern IntPtr _GetErrorMessage(IntPtr instance);
@@ -63,32 +55,19 @@ public class XtionInterface : MonoBehaviour
 
     private void Start()
     {
-       
-        InitiateDevice();
     }
 
-    private void InitiateDevice()
+    public void InitiateDevice()
     {
         captureInstance = _Create();
-        logger.Log(kTAG, "The instance pointer : " + captureInstance);
         _InitOpenNI(captureInstance);
-        device = Marshal.PtrToStringAnsi(_OpenDevice(captureInstance));
-       
-        logger.Log(kTAG, "get plugin name : " + Marshal.PtrToStringAnsi(_GetPluginName(captureInstance)));
+        _OpenDevice(captureInstance);
+        logger.Log(kTAG, "Loaded the plugin : " + Marshal.PtrToStringAnsi(_GetPluginName(captureInstance)));
     }
 
     public void CloseDevice()
     {
         _CloseDevice(captureInstance);
-    }
-
-    public void GetInitFlag()
-    {
-        logger.Log(kTAG, "get init flag : " + _GetInitFlag(captureInstance));
-        if (!_GetInitFlag(captureInstance))
-        {
-            logger.Log(kTAG, "error : " + Marshal.PtrToStringAnsi(_GetErrorMessage(captureInstance)));
-        }
     }
 
     public void GetDeviceName()

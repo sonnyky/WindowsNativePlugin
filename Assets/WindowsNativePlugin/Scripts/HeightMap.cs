@@ -1,8 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using UnityEngine.Profiling;
 
 public class HeightMap : MonoBehaviour
 {
@@ -19,7 +16,7 @@ public class HeightMap : MonoBehaviour
     private MeshRenderer mr;
     private Mesh mesh;
     private Terrain m_terrain;
-    private float[,] m_heightValues, prev_heightValues, dummyHeightValues;
+    private float[,] m_heightValues, prev_heightValues;
     private bool initFlag = false;
 
     public float minDepth = 1800;
@@ -28,8 +25,6 @@ public class HeightMap : MonoBehaviour
     private WaitForSeconds terrainUpdateDelay;
     private Vector3 thisPixelPos;
     int x, y;
-
-  
 
     // Use this for initialization
     void Start()
@@ -42,9 +37,7 @@ public class HeightMap : MonoBehaviour
         m_terrain = (Terrain)gameObject.GetComponent<Terrain>();
         terrainWidth = m_terrain.terrainData.heightmapWidth;
         terrainHeight = m_terrain.terrainData.heightmapHeight;
-        // Debug.Log("Depth image Height : " + depthHeight + " and Width : " + depthWidth);
-        // Debug.Log("Terrain Height, Width : "+ m_terrain.terrainData.heightmapHeight + ", " + m_terrain.terrainData.heightmapWidth);
-
+      
         // Create the game object containing the renderer
         mf = gameObject.AddComponent(typeof(MeshFilter)) as MeshFilter;
         mr = gameObject.AddComponent(typeof(MeshRenderer)) as MeshRenderer;
@@ -54,10 +47,6 @@ public class HeightMap : MonoBehaviour
 
         m_heightValues = new float[terrainWidth, terrainHeight];
         prev_heightValues = new float[terrainWidth, terrainHeight];
-
-        dummyHeightValues = new float[terrainWidth, terrainHeight];
-
-       
     }
    
     // Update is called once per frame
@@ -127,10 +116,7 @@ public class HeightMap : MonoBehaviour
         while (true)
         {
             yield return terrainUpdateDelay;
-            
                 m_terrain.terrainData.SetHeights(0, 0, m_heightValues);
-
-          
         }
     }
 
