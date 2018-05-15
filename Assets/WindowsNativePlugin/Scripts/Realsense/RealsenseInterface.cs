@@ -59,9 +59,9 @@ public class RealsenseInterface : MonoBehaviour {
         for (int i = 0; i < arraySize; i++)
         {
             strArray[i] = Marshal.PtrToStringAnsi(dataPtrArray[i]);
-           // Marshal.FreeCoTaskMem(dataPtrArray[i]);
+            Marshal.FreeCoTaskMem(dataPtrArray[i]);
         }
-        //Marshal.FreeCoTaskMem(dataPtr);
+        Marshal.FreeCoTaskMem(dataPtr);
         
         return strArray;
     }
