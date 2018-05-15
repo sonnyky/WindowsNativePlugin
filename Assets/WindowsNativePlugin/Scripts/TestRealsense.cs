@@ -14,4 +14,9 @@ public class TestRealsense : MonoBehaviour {
     {
         realsenseInterface.InitiateDevice();
     }
+
+    public void ListDevices()
+    {
+        realsenseInterface.ListDevices();
+    }
 }
