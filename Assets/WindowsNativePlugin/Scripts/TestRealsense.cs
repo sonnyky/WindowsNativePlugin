@@ -19,4 +19,8 @@ public class TestRealsense : MonoBehaviour {
     {
         realsenseInterface.ListDevices();
     }
+    public void GetDepth()
+    {
+        realsenseInterface.GetDepth();
+    }
 }
