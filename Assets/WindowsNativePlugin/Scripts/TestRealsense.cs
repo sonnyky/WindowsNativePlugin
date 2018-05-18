@@ -36,9 +36,4 @@ public class TestRealsense : MonoBehaviour {
     {
         canGetDepth = true;
     }
-
-    public void StopCameraStream()
-    {
-
-    }
 }
