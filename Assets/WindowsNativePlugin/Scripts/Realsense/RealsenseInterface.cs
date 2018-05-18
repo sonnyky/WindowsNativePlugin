@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
@@ -27,13 +28,15 @@ public class RealsenseInterface : MonoBehaviour {
     [DllImport("uplugin_realsense_d415", EntryPoint = "com_tinker_get_depth", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private static extern IntPtr _GetDepth(IntPtr instance, ref int size);
 
+    [DllImport("uplugin_realsense_d415", EntryPoint = "com_tinker_remove_devices", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+    private static extern void _RemoveDevices(IntPtr instance);
+
 
     private static ILogger logger = Debug.unityLogger;
     private static string kTAG = "RealsenseUnity";
 
     // Variables to hold data in Unity readable format
     private String[] deviceNames;
-    private PeoplePosition[] returnedData;
     private string test = "";
 
     public void InitiateDevice()
@@ -60,34 +63,34 @@ public class RealsenseInterface : MonoBehaviour {
         print("strArray[" + 4 + "] = [" + String.Join(",", deviceNames) + "]");
     }
 
-    public void GetDepth()
+    public void GetDepth(ref List<PeoplePosition> listOfPeoplePositions)
     {
         int depthDataSize = 0;
         IntPtr depthDataPtr = _GetDepth(captureInstance, ref depthDataSize);
-        Debug.Log("depth data pointer : " + depthDataPtr);
-        logger.Log(kTAG, "test depth data size : " + depthDataSize);
 
-        returnedData = new PeoplePosition[depthDataSize];
-        returnedData = MarshalPeoplePositionArray(depthDataPtr, depthDataSize);
+        logger.Log(kTAG, "test depth data pointer : " + depthDataPtr + " and size : " + depthDataSize);
+
+        listOfPeoplePositions = MarshalPeoplePositionArray(depthDataPtr, depthDataSize);
     }
 
     // Decodes struct array from raw pointer
-    private static PeoplePosition[] MarshalPeoplePositionArray(IntPtr dataPtr, int arraySize)
+    private static List<PeoplePosition> MarshalPeoplePositionArray(IntPtr dataPtr, int arraySize)
     {
-        var peoplePositionArray = new PeoplePosition[arraySize];
+        var peoplePositionList = new List<PeoplePosition>();
 
         int offset = 0;
         int pointSize = Marshal.SizeOf(typeof(PeoplePosition));
 
         for (int i=0; i<arraySize; i++)
         {
-            peoplePositionArray[i] = (PeoplePosition) Marshal.PtrToStructure(new IntPtr(dataPtr.ToInt32() + offset), typeof(PeoplePosition));
+            IntPtr thisDataPtr = new IntPtr(dataPtr.ToInt32() + offset);
+            PeoplePosition oneData = (PeoplePosition) Marshal.PtrToStructure(thisDataPtr, typeof(PeoplePosition));
+            peoplePositionList.Add(oneData);
             offset += pointSize;
-            Debug.Log("x data : " + peoplePositionArray[i].x);
-            Debug.Log("y data : " + peoplePositionArray[i].y);
+            //Marshal.FreeCoTaskMem(thisDataPtr);
         }
         //Marshal.FreeCoTaskMem(dataPtr);
-        return peoplePositionArray;
+        return peoplePositionList;
     }
 
     // Decodes string array from raw pointer
@@ -106,4 +109,10 @@ public class RealsenseInterface : MonoBehaviour {
         
         return strArray;
     }
+    
+    private void OnApplicationQuit()
+    {
+        _RemoveDevices(captureInstance);
+    }
+    
 }
