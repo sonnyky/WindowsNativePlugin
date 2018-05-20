@@ -28,6 +28,10 @@ public class RealsenseInterface : MonoBehaviour {
     [DllImport("uplugin_realsense_d415", EntryPoint = "com_tinker_get_depth", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private static extern IntPtr _GetDepth(IntPtr instance, ref int size);
 
+    [DllImport("uplugin_realsense_d415", EntryPoint = "com_tinker_get_homography", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+    private static extern IntPtr _GetHomography(IntPtr instance, float proj_tl_x, float proj_tl_y, float proj_tr_x, float proj_tr_y, float proj_bl_x, float proj_bl_y, float proj_br_x, float proj_br_y,
+        float image_tl_x, float image_tl_y, float image_tr_x, float image_tr_y, float image_bl_x, float image_bl_y, float image_br_x, float image_br_y, ref int listSize);
+
     [DllImport("uplugin_realsense_d415", EntryPoint = "com_tinker_remove_devices", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private static extern void _RemoveDevices(IntPtr instance);
 
@@ -71,6 +75,35 @@ public class RealsenseInterface : MonoBehaviour {
         logger.Log(kTAG, "test depth data pointer : " + depthDataPtr + " and size : " + depthDataSize);
 
         listOfPeoplePositions = MarshalPeoplePositionArray(depthDataPtr, depthDataSize);
+    }
+
+    public void GetHomography(ref List<float> homography, float proj_tl_x, float proj_tl_y, float proj_tr_x, float proj_tr_y, float proj_bl_x, float proj_bl_y, float proj_br_x, float proj_br_y,
+        float image_tl_x, float image_tl_y, float image_tr_x, float image_tr_y, float image_bl_x, float image_bl_y, float image_br_x, float image_br_y, ref int size)
+    {
+        int listSize = 0;
+        IntPtr hMatDataPtr = _GetHomography(captureInstance, proj_tl_x, proj_tl_y, proj_tr_x, proj_tr_y, proj_bl_x, proj_bl_y, proj_br_x, proj_br_y,
+            image_tl_x, image_tl_y, image_tr_x, image_tr_y, image_bl_x, image_bl_y, image_br_x, image_br_y, ref listSize);
+
+        // here listSize value is modified according to the number of homography matrix values
+
+        homography = MarshalHomographyValues(hMatDataPtr, listSize);
+        size = listSize;
+    }
+
+    private static List<float> MarshalHomographyValues(IntPtr hMatPtr, int listSize)
+    {
+        var homographyValueList = new List<float>();
+        int offset = 0;
+        int pointSize = Marshal.SizeOf(typeof(float));
+
+        for (int i = 0; i < listSize; i++)
+        {
+            IntPtr thisDataPtr = new IntPtr(hMatPtr.ToInt32() + offset);
+            float oneData = (float)Marshal.PtrToStructure(thisDataPtr, typeof(float));
+            homographyValueList.Add(oneData);
+            offset += pointSize;
+        }
+        return homographyValueList;
     }
 
     // Decodes struct array from raw pointer
