@@ -116,7 +116,8 @@ public class RealsenseInterface : MonoBehaviour {
 
         for (int i=0; i<arraySize; i++)
         {
-            IntPtr thisDataPtr = new IntPtr(dataPtr.ToInt32() + offset);
+            // If architecture is x64, use ToInt64
+            IntPtr thisDataPtr = new IntPtr(dataPtr.ToInt64() + offset);
             PeoplePosition oneData = (PeoplePosition) Marshal.PtrToStructure(thisDataPtr, typeof(PeoplePosition));
             peoplePositionList.Add(oneData);
             offset += pointSize;
