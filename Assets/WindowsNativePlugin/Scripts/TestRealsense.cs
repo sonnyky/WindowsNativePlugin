@@ -8,7 +8,6 @@ public class TestRealsense : MonoBehaviour {
     private bool canGetDepth = false;
 
     List<RealsenseInterface.PeoplePosition> peoplePositions;
-
     // Use this for initialization
     void Start () {
         realsenseInterface = GameObject.Find("CameraInterface").GetComponent<RealsenseInterface>();
@@ -36,6 +35,7 @@ public class TestRealsense : MonoBehaviour {
     {
         canGetDepth = true;
     }
+   
 
     public void GetTestHomography()
     {

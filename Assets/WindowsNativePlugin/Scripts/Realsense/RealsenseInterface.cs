@@ -28,6 +28,9 @@ public class RealsenseInterface : MonoBehaviour {
     [DllImport("uplugin_realsense_d415", EntryPoint = "com_tinker_get_depth", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private static extern IntPtr _GetDepth(IntPtr instance, ref int size);
 
+    [DllImport("uplugin_realsense_d415", EntryPoint = "com_tinker_get_thresholded_image", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+    private static extern void _GetThresholdedImage(IntPtr instance, IntPtr data, ref int width, ref int height);
+
     [DllImport("uplugin_realsense_d415", EntryPoint = "com_tinker_get_homography", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private static extern IntPtr _GetHomography(IntPtr instance, float proj_tl_x, float proj_tl_y, float proj_tr_x, float proj_tr_y, float proj_bl_x, float proj_bl_y, float proj_br_x, float proj_br_y,
         float image_tl_x, float image_tl_y, float image_tr_x, float image_tr_y, float image_bl_x, float image_bl_y, float image_br_x, float image_br_y, ref int listSize);
@@ -75,6 +78,14 @@ public class RealsenseInterface : MonoBehaviour {
         logger.Log(kTAG, "test depth data pointer : " + depthDataPtr + " and size : " + depthDataSize);
 
         listOfPeoplePositions = MarshalPeoplePositionArray(depthDataPtr, depthDataSize);
+    }
+
+    public void GetThresholdedImage(ref IntPtr pixPtr, ref int width_, ref int height_)
+    {
+        int width = 0, height = 0;
+        _GetThresholdedImage(captureInstance, pixPtr , ref width, ref height);
+        width_ = width;
+        height_ = height;
     }
 
     public void GetHomography(ref List<float> homography, float proj_tl_x, float proj_tl_y, float proj_tr_x, float proj_tr_y, float proj_bl_x, float proj_bl_y, float proj_br_x, float proj_br_y,
