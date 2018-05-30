@@ -22,7 +22,7 @@ public class TestImage : MonoBehaviour {
 
     void InitTexture()
     {
-        tex = new Texture2D(1280, 720, TextureFormat.ARGB32, false);
+        tex = new Texture2D(1280, 720, TextureFormat.RGBA32, false);
         pixel32 = tex.GetPixels32();
         //Pin pixel32 array
         pixelHandle = GCHandle.Alloc(pixel32, GCHandleType.Pinned);
