@@ -28,14 +28,18 @@ public class CalcHomography : MonoBehaviour
     private void Start()
     {
         InitiateDevice();
-        Vector3[] testSrc = new Vector3[2];
-        Vector3[] testDst = new Vector3[2];
+        Vector3[] testSrc = new Vector3[4];
+        Vector3[] testDst = new Vector3[4];
 
         testSrc[0].x = 12f; testSrc[0].y = 15f; testSrc[0].z = 23f;
         testSrc[1].x = 120f; testSrc[1].y = 15f; testSrc[1].z = 23f;
+        testSrc[2].x = 120f; testSrc[2].y = 15f; testSrc[2].z = 100f;
+        testSrc[3].x = 12f; testSrc[3].y = 15f; testSrc[3].z = 100f;
 
-        testDst[0].x = 12f; testDst[0].y = 23f; testDst[0].z = 23f;
-        testDst[1].x = 120f; testDst[1].y = 15f; testDst[1].z = 34f;
+        testDst[0].x = 12f; testDst[0].y = 15f; testDst[0].z = 23f;
+        testDst[1].x = 120f; testDst[1].y = 15f; testDst[1].z = 23f;
+        testDst[2].x = 120f; testDst[2].y = 15f; testDst[2].z = 100f;
+        testDst[3].x = 12f; testDst[3].y = 15f; testDst[3].z = 100f;
 
         testing(testSrc, testDst);
     }
@@ -47,7 +51,9 @@ public class CalcHomography : MonoBehaviour
 
     void testing(Vector3[] src, Vector3[] dst)
     {
-        if (src.Length != dst.Length) return;
+        // Homography needs at least four points for both point sets
+        if (src.Length != dst.Length
+            || src.Length < 4) return;
 
         // Pin array of source points
         GCHandle pinnedArray = GCHandle.Alloc(src, GCHandleType.Pinned);
@@ -57,21 +63,18 @@ public class CalcHomography : MonoBehaviour
         GCHandle pinnedDst = GCHandle.Alloc(dst, GCHandleType.Pinned);
         IntPtr ptrDst = pinnedDst.AddrOfPinnedObject();
 
-        Debug.Log("Length of  src data to pass  " + src.Length + " and length of dst data to pass : " + dst.Length);
-
         List<float> homography = new List<float>();
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < 9; i++)
         {
             homography.Add(0);
         }
         IntPtr resPtr = IntPtr.Zero;
-        IntPtr res = _CalcHomography(instance, ptrSrc, ptrDst, homography.Count);
+        IntPtr res = _CalcHomography(instance, ptrSrc, ptrDst, src.Length );
 
         homography = MarshalHomographyValues(res, homography.Count);
 
-        Debug.Log("after call first  : " + homography[0]);
-        Debug.Log("after call " + homography[3]);
         pinnedArray.Free();
+        pinnedDst.Free();
     }
 
     private static List<float> MarshalHomographyValues(IntPtr hMatPtr, int listSize)
