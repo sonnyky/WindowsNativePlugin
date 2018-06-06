@@ -38,6 +38,9 @@ public class RealsenseInterface : MonoBehaviour {
     [DllImport("uplugin_realsense_d415", EntryPoint = "com_tinker_remove_devices", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private static extern void _RemoveDevices(IntPtr instance);
 
+    // This must be called before _ListDevices
+    [DllImport("uplugin_realsense_d415", EntryPoint = "com_tinker_setup_detection_params", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+    private static extern void _SetupCaptureParameters(IntPtr instance, int distanceThreshold, int minBlobArea, int maxBlobArea, int erosionSize);
 
     private static ILogger logger = Debug.unityLogger;
     private static string kTAG = "RealsenseUnity";
@@ -159,5 +162,15 @@ public class RealsenseInterface : MonoBehaviour {
     {
         _RemoveDevices(captureInstance);
     }
-    
+
+    /// <summary>
+    /// キャプチャパラメータの設定。とりあえず有効距離の閾値、Blob（塊り）の最小面積。ListDevices より前に実行しないといけない。
+    /// </summary>
+    /// <param name="dist">有効距離。これ以上遠い点は無視される。㎜</param>
+    /// <param name="area">Blob の最小面積。小さすぎるとノイズが誤検知される。大きすぎると対象物体が検出されない。500～1500ぐらいがよさそう</param>
+    public void SetDetectionParams(int dist, int minArea, int maxArea, int size)
+    {
+        _SetupCaptureParameters(captureInstance, dist, minArea, maxArea, size);
+    }
+
 }

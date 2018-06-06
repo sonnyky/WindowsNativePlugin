@@ -72,4 +72,9 @@ public class TestRealsense : MonoBehaviour {
 
     }
 
+    public void SetupDetectionParams()
+    {
+        realsenseInterface.SetDetectionParams(2300, 3000, 50000, 5);
+    }
+
 }
