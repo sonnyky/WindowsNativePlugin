@@ -31,6 +31,9 @@ public class RealsenseInterface : MonoBehaviour {
     [DllImport("uplugin_realsense_d415", EntryPoint = "com_tinker_get_thresholded_image", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private static extern void _GetThresholdedImage(IntPtr instance, IntPtr data, ref int width, ref int height);
 
+    [DllImport("uplugin_realsense_d415", EntryPoint = "com_tinker_get_color_image", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+    private static extern void _GetColorImage(IntPtr instance, IntPtr data, ref int width, ref int height);
+
     [DllImport("uplugin_realsense_d415", EntryPoint = "com_tinker_get_homography", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private static extern IntPtr _GetHomography(IntPtr instance, float proj_tl_x, float proj_tl_y, float proj_tr_x, float proj_tr_y, float proj_bl_x, float proj_bl_y, float proj_br_x, float proj_br_y,
         float image_tl_x, float image_tl_y, float image_tr_x, float image_tr_y, float image_bl_x, float image_bl_y, float image_br_x, float image_br_y, ref int listSize);
@@ -40,7 +43,7 @@ public class RealsenseInterface : MonoBehaviour {
 
     // This must be called before _ListDevices
     [DllImport("uplugin_realsense_d415", EntryPoint = "com_tinker_setup_detection_params", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-    private static extern void _SetupCaptureParameters(IntPtr instance, int distanceThreshold, int minBlobArea, int maxBlobArea, int erosionSize);
+    private static extern void _SetupCaptureParameters(IntPtr instance, int lowDistMin, int lowDistMax, int highDistMin, int highDistMax, int minBlobArea, int maxBlobArea, int erosionSize);
 
     private static ILogger logger = Debug.unityLogger;
     private static string kTAG = "RealsenseUnity";
@@ -87,6 +90,14 @@ public class RealsenseInterface : MonoBehaviour {
     {
         int width = 0, height = 0;
         _GetThresholdedImage(captureInstance, pixPtr , ref width, ref height);
+        width_ = width;
+        height_ = height;
+    }
+
+    public void GetColorImage(ref IntPtr pixPtr, ref int width_, ref int height_)
+    {
+        int width = 0, height = 0;
+        _GetColorImage(captureInstance, pixPtr, ref width, ref height);
         width_ = width;
         height_ = height;
     }
@@ -168,9 +179,9 @@ public class RealsenseInterface : MonoBehaviour {
     /// </summary>
     /// <param name="dist">有効距離。これ以上遠い点は無視される。㎜</param>
     /// <param name="area">Blob の最小面積。小さすぎるとノイズが誤検知される。大きすぎると対象物体が検出されない。500～1500ぐらいがよさそう</param>
-    public void SetDetectionParams(int dist, int minArea, int maxArea, int size)
+    public void SetDetectionParams(int lowDistMin, int lowDistMax, int highDistMin, int highDistMax, int minArea, int maxArea, int size)
     {
-        _SetupCaptureParameters(captureInstance, dist, minArea, maxArea, size);
+        _SetupCaptureParameters(captureInstance, lowDistMin, lowDistMax, highDistMin, highDistMax, minArea, maxArea, size);
     }
 
 }
