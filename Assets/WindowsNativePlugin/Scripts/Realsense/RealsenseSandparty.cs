@@ -8,6 +8,8 @@ public class RealsenseSandparty : MonoBehaviour
     // This is the pointer to the realsense_capture class.
     private IntPtr captureInstance = IntPtr.Zero;
 
+    private short[] returnedData;
+
     // This method creates the xtion_capture instance.
     [DllImport("uplugin_sandparty_realsense", EntryPoint = "com_tinker_realsense_capture_create")]
     private static extern IntPtr _Create();
@@ -55,6 +57,7 @@ public class RealsenseSandparty : MonoBehaviour
     {
         // We only support up to 4 devices. Should be enough for now. TODO : add logic to handle when more than 10 are present.
         deviceNames = new string[4];
+        returnedData = new short[921600];
     }
 
     public void ListDevices()
@@ -64,13 +67,26 @@ public class RealsenseSandparty : MonoBehaviour
         print("strArray[" + 4 + "] = [" + String.Join(",", deviceNames) + "]");
     }
 
-    public void GetDepth()
+    public void GetDepthData()
     {
-        IntPtr depthDataPtr = _GetSandboxDepth(captureInstance);
-
-        logger.Log(kTAG, "test depth data pointer : " + depthDataPtr);
-
+        IntPtr depthDataPtr = IntPtr.Zero;
+        depthDataPtr = _GetSandboxDepth(captureInstance);
+        int pointSize = Marshal.SizeOf(typeof(short));
+        if (depthDataPtr != IntPtr.Zero)
+        {
+            Marshal.Copy(depthDataPtr, returnedData, 0, returnedData.Length);
+            // at center the index is col * (row/2) + (col/2) = 1280 * (360) + 640
+            //IntPtr thisDataPtr = new IntPtr(depthDataPtr.ToInt64() + (pointSize*461440));
+            //short oneData = (short)Marshal.PtrToStructure(thisDataPtr, typeof(short));
+            //logger.Log(kTAG, "depth at center : " + returnedData[461440]);
+        }
     }
+
+    public void GetReturnedDepthData(ref short[] dataRequest)
+    {
+        dataRequest = returnedData;
+    }
+
 
     public void GetThresholdedImage(ref IntPtr pixPtr, ref int width_, ref int height_)
     {

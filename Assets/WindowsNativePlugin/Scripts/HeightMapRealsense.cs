@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class HeightMapRealsense : MonoBehaviour
 {
@@ -25,6 +26,8 @@ public class HeightMapRealsense : MonoBehaviour
     private WaitForSeconds terrainUpdateDelay;
     private Vector3 thisPixelPos;
     int x, y;
+
+    private IntPtr depthDataPointer;
 
     // Use this for initialization
     void Start()
@@ -54,7 +57,7 @@ public class HeightMapRealsense : MonoBehaviour
     {
         if (generate)
         {
-           // GenerateHeightmap();
+            GenerateHeightmap();
         }
     }
 
@@ -66,33 +69,32 @@ public class HeightMapRealsense : MonoBehaviour
         {
             for (x = 0; x < terrainWidth; x++)
             {
-                m_heightValues[x, y] = Random.Range(0, 30f) * .5f;
+                m_heightValues[x, y] = UnityEngine.Random.Range(0, 30f) * .5f;
             }
         }
         m_terrain.terrainData.SetHeights(0, 0, m_heightValues);
     }
 
-    //void GenerateHeightmap()
-    //{
-    //    camInterface.GetDepthData();
-    //    camInterface.GetReturnedDepthData(ref depthData);
-    //    Debug.Log("depth data at center : " + depthData[153920]);
-    //    for (y = 0; y < 480; y++)
-    //    {
-    //        for (x = 0; x < depthWidth; x++)
-    //        {
+    void GenerateHeightmap()
+    {
+        camInterface.GetDepthData();
+        camInterface.GetReturnedDepthData(ref depthData);
+        for (y = 0; y < 480; y++)
+        {
+            for (x = 384; x < 896; x++)
+           {
 
-    //            float heightPercentage = 0;
-    //            int depthIndex = ((y) * 640) + (x);
-    //            float depth = 0;
+                float heightPercentage = 0;
+                int depthIndex = ((y) * 1280) + (x);
+                float depth = 0;
 
-    //            depth = depthData[depthIndex];
-    //            heightPercentage = FilterDepthValueToPercent(depth);
-    //            m_heightValues[x, y] = heightPercentage;
-    //        }
-    //    }
-    //    m_terrain.terrainData.SetHeights(0, 0, m_heightValues);
-    //}
+                depth = depthData[depthIndex];
+                heightPercentage = FilterDepthValueToPercent(depth);
+                m_heightValues[x - 384, y] = heightPercentage;
+            }
+        }
+        m_terrain.terrainData.SetHeights(0, 0, m_heightValues);
+    }
 
     private float FilterDepthValueToPercent(float inputDepth)
     {
