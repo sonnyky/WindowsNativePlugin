@@ -23,6 +23,12 @@ public class RealsenseSandparty : MonoBehaviour
     [DllImport("uplugin_sandparty_realsense", EntryPoint = "com_tinker_get_sandbox_depth", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private static extern IntPtr _GetSandboxDepth(IntPtr instance);
 
+    [DllImport("uplugin_sandparty_realsense", EntryPoint = "com_tinker_get_debug_message", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+    private static extern string _GetDebugMessage(IntPtr instance);
+
+    [DllImport("uplugin_sandparty_realsense", EntryPoint = "com_tinker_get_error_message", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+    private static extern IntPtr _GetErrorMessage(IntPtr instance);
+
     [DllImport("uplugin_sandparty_realsense", EntryPoint = "com_tinker_get_thresholded_image", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private static extern void _GetThresholdedImage(IntPtr instance, IntPtr data, ref int width, ref int height);
 
@@ -35,6 +41,10 @@ public class RealsenseSandparty : MonoBehaviour
 
     [DllImport("uplugin_sandparty_realsense", EntryPoint = "com_tinker_remove_devices", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private static extern void _RemoveDevices(IntPtr instance);
+
+    [DllImport("uplugin_sandparty_realsense", EntryPoint = "com_tinker_start_thread", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+    private static extern void _StartThread(IntPtr instance);
+
 
     // This must be called before _ListDevices
     [DllImport("uplugin_sandparty_realsense", EntryPoint = "com_tinker_setup_detection_params", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
@@ -169,4 +179,18 @@ public class RealsenseSandparty : MonoBehaviour
         _SetupCaptureParameters(captureInstance, lowDistMin, lowDistMax, highDistMin, highDistMax, minArea, maxArea, size);
     }
 
+    public void GetDebugMessage()
+    {
+        logger.Log(kTAG, "get debug message : " + _GetDebugMessage(captureInstance));
+    }
+
+    public void GetErrorMessage()
+    {
+        logger.Log(kTAG, "get error message : " + Marshal.PtrToStringAnsi(_GetErrorMessage(captureInstance)));
+    }
+
+    public void StartThread()
+    {
+        _StartThread(captureInstance);
+    }
 }

@@ -30,6 +30,21 @@ public class TestSandpartyRealsense : MonoBehaviour
         realsenseInterface.ListDevices();
     }
 
+    public void GetDebugMessage()
+    {
+        realsenseInterface.GetDebugMessage();
+    }
+
+    public void GetErrorMessage()
+    {
+        realsenseInterface.GetErrorMessage();
+    }
+
+    public void StartThread()
+    {
+        realsenseInterface.StartThread();
+    }
+
     public void GetDepthData()
     {
         heightMap.StartGenerate();
