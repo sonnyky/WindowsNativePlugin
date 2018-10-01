@@ -4,4 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/WindowsNativePlugin/Scenes/WebcamCV.unity
+    guid: 27aaf8335802b0248b2bb7223532b6c5
+  m_configObjects: {}

@@ -50,4 +50,11 @@ public class TestWebcam : MonoBehaviour {
     {
         canGetImage = true;
     }
+
+    void OnApplicationQuit()
+    {
+        webcam.ReleaseCamera();
+        //Free handle
+        pixelHandle.Free();
+    }
 }

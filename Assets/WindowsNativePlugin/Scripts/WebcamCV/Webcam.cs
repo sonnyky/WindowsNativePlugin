@@ -20,6 +20,9 @@ public class Webcam : MonoBehaviour {
     [DllImport("uplugin_face", EntryPoint = "com_tinker_recognition_setup_camera", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private static extern void _SetupCamera(IntPtr instance);
 
+    [DllImport("uplugin_face", EntryPoint = "com_tinker_recognition_release_camera", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+    private static extern void _ReleaseCamera(IntPtr instance);
+
     [DllImport("uplugin_face", EntryPoint = "com_tinker_recognition_get_color_image", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private static extern void _GetColorImage(IntPtr instance, IntPtr data, ref int width, ref int height);
 
@@ -41,6 +44,11 @@ public class Webcam : MonoBehaviour {
     public void SetupCamera()
     {
         _SetupCamera(captureInstance);
+    }
+
+    public void ReleaseCamera()
+    {
+        _ReleaseCamera(captureInstance);
     }
 
 }
