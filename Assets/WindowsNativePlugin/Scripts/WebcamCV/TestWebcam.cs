@@ -41,6 +41,7 @@ public class TestWebcam : MonoBehaviour {
             int width = 0, height = 0;
 
             webcam.GetColorImage(ref pixelPtr, ref width, ref height);
+            Debug.Log("width : " + width + " and height : " + height);
             tex.SetPixels32(pixel32);
             tex.Apply();
         }
