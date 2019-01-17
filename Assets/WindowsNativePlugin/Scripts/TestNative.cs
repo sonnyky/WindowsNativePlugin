@@ -26,9 +26,9 @@ public class TestNative : MonoBehaviour {
     {
         xtionInterface.GetVendorname();
     }
-    public void GetInitFlag()
+    public void InitDevice()
     {
-        xtionInterface.GetInitFlag();
+        xtionInterface.InitiateDevice();
     }
     public void StartDepthStream()
     {
