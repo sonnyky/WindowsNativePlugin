@@ -18,7 +18,7 @@ public class Shape : MonoBehaviour {
     private static extern IntPtr _GetPluginName(IntPtr instance);
 
     [DllImport("uplugin_shape", EntryPoint = "com_tinker_recognition_setup_camera", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-    private static extern void _SetupCamera(IntPtr instance);
+    private static extern void _SetupCamera(IntPtr instance, int camId);
 
     [DllImport("uplugin_shape", EntryPoint = "com_tinker_recognition_release_camera", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private static extern void _ReleaseCamera(IntPtr instance);
@@ -41,9 +41,9 @@ public class Shape : MonoBehaviour {
         height_ = height;
     }
 
-    public void SetupCamera()
+    public void SetupCamera(int camId)
     {
-        _SetupCamera(captureInstance);
+        _SetupCamera(captureInstance, camId);
     }
 
     public void ReleaseCamera()
