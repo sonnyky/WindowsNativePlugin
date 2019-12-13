@@ -9,14 +9,6 @@ public class TestShape : MonoBehaviour {
 
     #region Declarations
 
-    // Dropdown menu to select webcam device
-    Dropdown m_Dropdown;
-
-    List<string> options;
-
-    int m_SelectedDeviceId = 0;
-
-
     private Shape webcam;
     private bool canGetImage = false;
     public Renderer rend;
@@ -34,14 +26,9 @@ public class TestShape : MonoBehaviour {
         InitTexture();
         rend.material.mainTexture = tex;
 
-        options = new List<string>();
-
         webcam.InitiateDevice();
 
-        webcam.SetupCamera(m_SelectedDeviceId);
-
-        m_Dropdown = GameObject.Find("Canvas").transform.Find("DeviceSelectorDropdown").GetComponent<Dropdown>();
-        PrepareDropdownOptions();
+        webcam.SetupCamera(0);
 
     }
 
@@ -82,32 +69,5 @@ public class TestShape : MonoBehaviour {
         webcam.ReleaseCamera();
         //Free handle
         pixelHandle.Free();
-    }
-
-    void PrepareDropdownOptions()
-    {
-        int numberOfOptions = GetComponent<DeviceSelector>().GetNumberOfDevices();
-
-        m_Dropdown.ClearOptions();
-
-        for (int i=0; i<numberOfOptions; i++)
-        {
-            options.Add(GetComponent<DeviceSelector>().GetDevice(i).name);            
-        }
-
-        m_Dropdown.AddOptions(options);
-
-        m_Dropdown.onValueChanged.AddListener(
-            delegate { DropdownValueChanged(m_Dropdown); }
-            );
-
-    }
-
-    void DropdownValueChanged(Dropdown changed)
-    {
-        StopCapture();
-        m_SelectedDeviceId = changed.value;
-        webcam.ReleaseCamera();
-        webcam.SetupCamera(m_SelectedDeviceId);
     }
 }
