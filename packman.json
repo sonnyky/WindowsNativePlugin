@@ -1,3 +1,4 @@
 {
-  "name": "WindowsNativePlugin"
+  "name": "WindowsNativePlugin",
+  "export" : "Assets/WindowsNativePlugin/Export"
 }
