@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
-public class CalcHomography : MonoBehaviour
+public class CalcHomography
 {
     [DllImport("uplugin_cv_util", EntryPoint = "com_tinker_cv_util_create")]
     private static extern IntPtr _Create();
@@ -28,32 +28,16 @@ public class CalcHomography : MonoBehaviour
     private void Start()
     {
         InitiateDevice();
-        Vector3[] testSrc = new Vector3[4];
-        Vector3[] testDst = new Vector3[4];
-
-        testSrc[0].x = 12f; testSrc[0].y = 15f; testSrc[0].z = 23f;
-        testSrc[1].x = 120f; testSrc[1].y = 15f; testSrc[1].z = 23f;
-        testSrc[2].x = 120f; testSrc[2].y = 15f; testSrc[2].z = 100f;
-        testSrc[3].x = 12f; testSrc[3].y = 15f; testSrc[3].z = 100f;
-
-        testDst[0].x = 12f; testDst[0].y = 15f; testDst[0].z = 23f;
-        testDst[1].x = 120f; testDst[1].y = 15f; testDst[1].z = 23f;
-        testDst[2].x = 120f; testDst[2].y = 15f; testDst[2].z = 100f;
-        testDst[3].x = 12f; testDst[3].y = 15f; testDst[3].z = 100f;
-
-        testing(testSrc, testDst);
+       
     }
 
-    private void Update()
+    public List<float> CalculateHomography(Vector3[] src, Vector3[] dst)
     {
+        List<float> homography = new List<float>();
 
-    }
-
-    void testing(Vector3[] src, Vector3[] dst)
-    {
         // Homography needs at least four points for both point sets
         if (src.Length != dst.Length
-            || src.Length < 4) return;
+            || src.Length < 4) return homography;
 
         // Pin array of source points
         GCHandle pinnedArray = GCHandle.Alloc(src, GCHandleType.Pinned);
@@ -63,7 +47,6 @@ public class CalcHomography : MonoBehaviour
         GCHandle pinnedDst = GCHandle.Alloc(dst, GCHandleType.Pinned);
         IntPtr ptrDst = pinnedDst.AddrOfPinnedObject();
 
-        List<float> homography = new List<float>();
         for (int i = 0; i < 9; i++)
         {
             homography.Add(0);
@@ -75,6 +58,8 @@ public class CalcHomography : MonoBehaviour
 
         pinnedArray.Free();
         pinnedDst.Free();
+
+        return homography;
     }
 
     private static List<float> MarshalHomographyValues(IntPtr hMatPtr, int listSize)
