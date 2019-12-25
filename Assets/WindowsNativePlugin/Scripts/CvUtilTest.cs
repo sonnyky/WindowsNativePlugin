@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CvUtilTest : MonoBehaviour {
 
-    List<float> homography;
+    float[] homography;
     CalcHomography m_HomographyCalculator;
 
     // Use this for initialization
@@ -13,7 +13,7 @@ public class CvUtilTest : MonoBehaviour {
         m_HomographyCalculator = new CalcHomography();
         m_HomographyCalculator.InitiateDevice();
 
-        homography = new List<float>();
+        homography = new float[9];
 
         Vector3[] testSrc = new Vector3[4];
         Vector3[] testDst = new Vector3[4];
@@ -30,7 +30,7 @@ public class CvUtilTest : MonoBehaviour {
 
         homography = m_HomographyCalculator.CalculateHomography(testSrc, testDst);
 
-        for(int i=0; i<homography.Count; i++)
+        for(int i=0; i<homography.Length; i++)
         {
             Debug.Log(homography[i]);
         }
