@@ -10,7 +10,7 @@ public class CalcHomography
     private static extern IntPtr _Create();
 
     [DllImport("uplugin_cv_util", EntryPoint = "com_tinker_cv_util_calc_homography")]
-    private static extern IntPtr _CalcHomography(IntPtr instance, IntPtr src, IntPtr dst, int length);
+    private static extern void _CalcHomography(IntPtr instance, IntPtr src, IntPtr dst, int length, IntPtr data);
 
     [DllImport("uplugin_cv_util", EntryPoint = "com_tinker_cv_util_get_plugin_name")]
     private static extern IntPtr _GetPluginName(IntPtr instance);
@@ -31,9 +31,9 @@ public class CalcHomography
        
     }
 
-    public List<float> CalculateHomography(Vector3[] src, Vector3[] dst)
+    public float[] CalculateHomography(Vector3[] src, Vector3[] dst)
     {
-        List<float> homography = new List<float>();
+        float[] homography = new float[9];
 
         // Homography needs at least four points for both point sets
         if (src.Length != dst.Length
@@ -47,34 +47,20 @@ public class CalcHomography
         GCHandle pinnedDst = GCHandle.Alloc(dst, GCHandleType.Pinned);
         IntPtr ptrDst = pinnedDst.AddrOfPinnedObject();
 
+        // Pin homography array
+        GCHandle pinnedHM = GCHandle.Alloc(homography, GCHandleType.Pinned);
+        IntPtr ptrHM = pinnedHM.AddrOfPinnedObject();
+
         for (int i = 0; i < 9; i++)
         {
-            homography.Add(0);
+            homography[i] = 1.3f;
         }
-        IntPtr resPtr = IntPtr.Zero;
-        IntPtr res = _CalcHomography(instance, ptrSrc, ptrDst, src.Length );
-
-        homography = MarshalHomographyValues(res, homography.Count);
+        _CalcHomography(instance, ptrSrc, ptrDst, src.Length , ptrHM);
 
         pinnedArray.Free();
         pinnedDst.Free();
+        pinnedHM.Free();
 
         return homography;
-    }
-
-    private static List<float> MarshalHomographyValues(IntPtr hMatPtr, int listSize)
-    {
-        var homographyValueList = new List<float>();
-        int offset = 0;
-        int pointSize = Marshal.SizeOf(typeof(float));
-
-        for (int i = 0; i < listSize; i++)
-        {
-            IntPtr thisDataPtr = new IntPtr(hMatPtr.ToInt32() + offset);
-            float oneData = (float)Marshal.PtrToStructure(thisDataPtr, typeof(float));
-            homographyValueList.Add(oneData);
-            offset += pointSize;
-        }
-        return homographyValueList;
     }
 }
